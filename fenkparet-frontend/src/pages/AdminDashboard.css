@@ -1,0 +1,158 @@
+/* src/pages/AdminDashboard.css */
+body, html {
+  font-family: 'Poppins', sans-serif;
+  background-color: #1f2029;
+  color: #c4c3ca;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Layout */
+.admin-dashboard {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #2a2b38;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: width 0.3s;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  color: #ffeba7;
+  padding: 15px;
+  text-align: left;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar button:hover {
+  background-color: #3b3c4a;
+}
+
+.sidebar button svg {
+  font-size: 20px;
+}
+
+/* Main Content Wrapper */
+.main-content {
+  margin-left: 250px; /* Adjust for sidebar */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  height: 100vh; /* Full height */
+  overflow: auto; /* Ensure content is scrollable if it overflows */
+  box-sizing: border-box; /* Include padding in height/width calculations */
+}
+
+/* Grid Layout for Tabs */
+.tab-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* Cards */
+.card {
+  background-color: #2a2b38;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.card button {
+  background-color: #ffeba7;
+  color: #102770;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card button:hover {
+  background-color: #102770;
+  color: #ffeba7;
+}
+
+/* Analytics Section */
+.analytics-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.analytics-card {
+  background-color: #2a2b38;
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.analytics-card h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: static;
+      flex-direction: row;
+      overflow-x: auto;
+  }
+
+  .main-content {
+      margin-left: 0;
+  }
+
+  .tab-content, .analytics-section {
+      grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,32 @@
+.checkout-container {
+    text-align: center;
+    padding: 120px 5%;
+    color: white;
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+}
+
+.confirmation-input {
+    padding: 12px;
+    font-size: 1.2rem;
+    width: 80%;
+    margin-top: 20px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.confirm-btn {
+    background-color: #feca57;
+    color: black;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    margin-top: 20px;
+}
+
+.confirm-btn:hover {
+    background-color: #ff9f43;
+}

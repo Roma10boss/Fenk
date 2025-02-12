@@ -1,0 +1,143 @@
+/* 📦 Admin Orders Page Styles */
+.admin-orders-container {
+    padding: 80px 5%;
+    color: white;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    background-color: #13132b; /* Dark blue background */
+}
+
+/* 🔥 Title Styling */
+.admin-orders-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: #feca57; /* Gold color */
+}
+
+/* 📜 Orders List */
+.orders-list {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 📦 Order Card */
+.order-card {
+    background: #1a1a3d;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card:hover {
+    transform: scale(1.02);
+}
+
+/* 🏷 Order Header */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: white;
+    border-bottom: 2px solid #feca57;
+    padding-bottom: 10px;
+}
+
+/* 🕒 Order Status */
+.order-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.status-pending {
+    background-color: #ff9f43; /* Orange */
+    color: black;
+}
+
+.status-confirmed {
+    background-color: #2ecc71; /* Green */
+    color: white;
+}
+
+.status-expired {
+    background-color: #e74c3c; /* Red */
+    color: white;
+}
+
+/* 💰 Order Details */
+.order-details {
+    font-size: 1rem;
+    margin-top: 10px;
+    color: white;
+}
+
+/* ✅ Action Buttons */
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.confirm-btn {
+    background-color: #2ecc71; /* Green */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.confirm-btn:hover {
+    background-color: #27ae60;
+}
+
+.reject-btn {
+    background-color: #e74c3c; /* Red */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+
+.reject-btn:hover {
+    background-color: #c0392b;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 900px) {
+    .orders-list {
+        width: 100%;
+    }
+
+    .order-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .order-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+}
