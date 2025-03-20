@@ -1,184 +1,145 @@
-// src/components/Auth/SignInSignUp.js
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import api from '../../services/api';
-import './SignInSignUp.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./SignInSignUp.css";
 
-function SignInSignUp({ setUser }) {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and signup
-  const [formData, setFormData] = useState({ email: '', password: '', username: '' }); // Form data state
-  const [error, setError] = useState(''); // Error state
-  const navigate = useNavigate(); // For navigation
+const SignInSignUp = () => {
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(''); // Reset the error state
-
-    // Validation: Ensure all required fields are filled
-    if (!formData.email || !formData.password || (!isLogin && !formData.username)) {
-      setError('Please fill in all required fields.');
-      return;
-    }
-
-    try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register'; // Choose API endpoint
-      const payload = {
-        email: formData.email,
-        password: formData.password,
-        ...(isLogin ? {} : { username: formData.username }),
-      };
-
-      // Send request to the backend
-      const response = await api.post(endpoint, { user: payload });
-
-      if (response.data && response.data.token) {
-        const { token, role, username } = response.data;
-
-        // Store user data and token in localStorage
-        localStorage.setItem('token', token);
-        localStorage.setItem('username', username);
-        localStorage.setItem('role', role);
-
-        // Update user state
-        setUser({ username, role });
-
-        // Redirect based on role
-        navigate(role === 'admin' ? '/admin/dashboard' : '/profile');
-      } else {
-        setError('Unexpected server response. Please try again.');
-      }
-    } catch (err) {
-      // Handle errors
-      console.error('Error during authentication:', err);
-      setError(err.response?.data?.msg || 'An error occurred. Please try again.');
-    }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin); // Toggle between login and signup
-    setFormData({ email: '', password: '', username: '' }); // Reset form fields
-    setError(''); // Clear error messages
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!isLogin && !formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+    }
+    
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+    
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+    
+    if (isLogin) {
+      // Login Logic
+      console.log("Logging in with:", formData.email);
+      
+      // This would be replaced with actual API call
+      localStorage.setItem("user", JSON.stringify({ email: formData.email }));
+      navigate("/");
+    } else {
+      // Register Logic
+      console.log("Registering:", formData);
+      
+      // This would be replaced with actual API call
+      localStorage.setItem("user", JSON.stringify({ name: formData.name, email: formData.email }));
+      navigate("/");
+    }
   };
 
   return (
-    <div className="section">
-      <div className="container">
-        <div className="row full-height justify-content-center">
-          <div className="col-12 text-center align-self-center py-5">
-            <div className="section pb-5 pt-5 pt-sm-2 text-center">
-              {/* Toggle Button */}
-              <h6 className="mb-0 pb-3">
-                <span onClick={toggleForm}>Log In</span>
-                <span onClick={toggleForm}>Sign Up</span>
-              </h6>
-              <input
-                className="checkbox"
-                type="checkbox"
-                id="reg-log"
-                checked={!isLogin}
-                onChange={toggleForm}
-              />
-              <label htmlFor="reg-log"></label>
-
-              {/* Form */}
-              <div className="card-3d-wrap mx-auto">
-                <div className="card-3d-wrapper">
-                  {/* Login Form */}
-                  <div className={`card-front ${!isLogin ? 'inactive' : ''}`}>
-                    <div className="center-wrap">
-                      <div className="section text-center">
-                        <h4 className="mb-4 pb-3">Log In</h4>
-                        {error && <p className="error-message">{error}</p>}
-                        <form onSubmit={handleSubmit}>
-                          <div className="form-group">
-                            <input
-                              type="email"
-                              className="form-style"
-                              placeholder="Your Email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              required
-                            />
-                            <i className="input-icon uil uil-at"></i>
-                          </div>
-                          <div className="form-group mt-2">
-                            <input
-                              type="password"
-                              className="form-style"
-                              placeholder="Your Password"
-                              value={formData.password}
-                              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                              required
-                            />
-                            <i className="input-icon uil uil-lock-alt"></i>
-                          </div>
-                          <button type="submit" className="btn mt-4">SUBMIT</button>
-                          <p className="mb-0 mt-4 text-center">
-                            <a href="#0" className="link">Forgot your password?</a>
-                          </p>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Sign Up Form */}
-                  <div className={`card-back ${isLogin ? 'inactive' : ''}`}>
-                    <div className="center-wrap">
-                      <div className="section text-center">
-                        <h4 className="mb-4 pb-3">Sign Up</h4>
-                        {error && <p className="error-message">{error}</p>}
-                        <form onSubmit={handleSubmit}>
-                          <div className="form-group">
-                            <input
-                              type="text"
-                              className="form-style"
-                              placeholder="Your Full Name"
-                              value={formData.username}
-                              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                              required
-                            />
-                            <i className="input-icon uil uil-user"></i>
-                          </div>
-                          <div className="form-group mt-2">
-                            <input
-                              type="email"
-                              className="form-style"
-                              placeholder="Your Email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              required
-                            />
-                            <i className="input-icon uil uil-at"></i>
-                          </div>
-                          <div className="form-group mt-2">
-                            <input
-                              type="password"
-                              className="form-style"
-                              placeholder="Your Password"
-                              value={formData.password}
-                              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                              required
-                            />
-                            <i className="input-icon uil uil-lock-alt"></i>
-                          </div>
-                          <button type="submit" className="btn mt-4">SUBMIT</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="auth-page">
+      <div className="auth-container">
+        <div className="auth-header">
+          <div 
+            className={`auth-tab ${isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(true)}
+          >
+            LOG IN
           </div>
+          <div 
+            className={`auth-tab ${!isLogin ? 'active' : ''}`}
+            onClick={() => setIsLogin(false)}
+          >
+            SIGN UP
+          </div>
+        </div>
+        
+        <div className="auth-form-container">
+          <h2>{isLogin ? "Log In" : "Sign Up"}</h2>
+          
+          <form onSubmit={handleSubmit} className="auth-form">
+            {!isLogin && (
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your Full Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className={errors.name ? "input-error" : ""}
+                />
+                {errors.name && <p className="error-message">{errors.name}</p>}
+              </div>
+            )}
+            
+            <div className="form-group">
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                value={formData.email}
+                onChange={handleChange}
+                className={errors.email ? "input-error" : ""}
+              />
+              {errors.email && <p className="error-message">{errors.email}</p>}
+            </div>
+            
+            <div className="form-group">
+              <input
+                type="password"
+                name="password"
+                placeholder="Your Password"
+                value={formData.password}
+                onChange={handleChange}
+                className={errors.password ? "input-error" : ""}
+              />
+              {errors.password && <p className="error-message">{errors.password}</p>}
+            </div>
+            
+            <button type="submit" className="submit-button">SUBMIT</button>
+            
+            {isLogin && (
+              <div className="forgot-password">
+                <a href="#">Forgot your password?</a>
+              </div>
+            )}
+          </form>
         </div>
       </div>
     </div>
   );
-}
-
-SignInSignUp.propTypes = {
-  setUser: PropTypes.func.isRequired,
 };
 
 export default SignInSignUp;

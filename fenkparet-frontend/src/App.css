@@ -1,19 +1,177 @@
-
-body {
-  font-family: Arial, sans-serif;
+/* Global styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-nav {
-  background: #333;
-  padding: 1rem;
-  a {
-    color: white;
-    margin: 0 1rem;
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #1c1c2b;
+  color: #fff;
+  line-height: 1.6;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* App container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #1c1c2b;
+}
+
+/* Main content - everything below navbar */
+.main-content {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 80px; /* Adjust based on navbar height */
+  padding: 40px 0;
+}
+
+/* Container for page content */
+.page-container {
+  width: 85%;
+  max-width: 1400px; /* Maximum width for large screens */
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffeba7;
+}
+
+h1 {
+  font-size: 2.2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h2 {
+  font-size: 1.8rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 5px;
+  background-color: #ffeba7;
+  color: #1c1c2b;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  width: 100%;
+}
+
+.btn:hover {
+  background-color: #fff;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  border: 2px solid #ffeba7;
+  color: #ffeba7;
+}
+
+.btn-secondary:hover {
+  background-color: #ffeba7;
+  color: #1c1c2b;
+}
+
+/* Links */
+a {
+  color: #ffeba7;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #fff;
+}
+
+/* Form elements */
+input, select, textarea {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: none;
+  background-color: #252538;
+  color: #fff;
+  font-size: 1rem;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 235, 167, 0.5);
+}
+
+/* Required fields */
+.required {
+  color: #ff6b6b;
+}
+
+/* Cards */
+.card {
+  background-color: #252538;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Responsive Media Queries */
+/* For large desktop screens */
+@media (min-width: 1400px) {
+  .page-container {
+    max-width: 1400px;
+  }
+}
+
+/* For tablets */
+@media (max-width: 992px) {
+  .page-container {
+    width: 90%;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+/* For mobile phones */
+@media (max-width: 576px) {
+  .page-container {
+    width: 95%;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .main-content {
+    padding: 30px 0;
+  }
+  
+  .btn {
+    padding: 10px 15px;
   }
 }
