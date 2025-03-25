@@ -1,3 +1,4 @@
+// path: SignInSignUp.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInSignUp.css";
@@ -5,138 +6,156 @@ import "./SignInSignUp.css";
 const SignInSignUp = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [signupData, setSignupData] = useState({ name: "", email: "", password: "" });
   const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const handleLoginChange = (e) => setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  const handleSignupChange = (e) => setSignupData({ ...signupData, [e.target.name]: e.target.value });
 
-  const validateForm = () => {
+  const validateLogin = () => {
     const newErrors = {};
-    
-    if (!isLogin && !formData.name.trim()) {
-      newErrors.name = "Name is required";
-    }
-    
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-    
+    if (!loginData.email.trim()) newErrors.loginEmail = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(loginData.email)) newErrors.loginEmail = "Email is invalid";
+    if (!loginData.password) newErrors.loginPassword = "Password is required";
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const validateSignup = () => {
+    const newErrors = {};
+    if (!signupData.name.trim()) newErrors.signupName = "Name is required";
+    if (!signupData.email.trim()) newErrors.signupEmail = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(signupData.email)) newErrors.signupEmail = "Email is invalid";
+    if (!signupData.password) newErrors.signupPassword = "Password is required";
+    else if (signupData.password.length < 6) newErrors.signupPassword = "Password must be at least 6 characters";
+    return newErrors;
+  };
+
+  const handleLogin = (e) => {
     e.preventDefault();
-    const formErrors = validateForm();
-    
-    if (Object.keys(formErrors).length > 0) {
-      setErrors(formErrors);
-      return;
-    }
-    
-    if (isLogin) {
-      // Login Logic
-      console.log("Logging in with:", formData.email);
-      
-      // This would be replaced with actual API call
-      localStorage.setItem("user", JSON.stringify({ email: formData.email }));
-      navigate("/");
-    } else {
-      // Register Logic
-      console.log("Registering:", formData);
-      
-      // This would be replaced with actual API call
-      localStorage.setItem("user", JSON.stringify({ name: formData.name, email: formData.email }));
-      navigate("/");
-    }
+    const formErrors = validateLogin();
+    if (Object.keys(formErrors).length > 0) return setErrors(formErrors);
+    localStorage.setItem("user", JSON.stringify({ email: loginData.email }));
+    navigate("/");
+  };
+
+  const handleSignup = (e) => {
+    e.preventDefault();
+    const formErrors = validateSignup();
+    if (Object.keys(formErrors).length > 0) return setErrors(formErrors);
+    localStorage.setItem("user", JSON.stringify({ name: signupData.name, email: signupData.email }));
+    navigate("/");
+  };
+
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <div className="auth-header">
-          <div 
-            className={`auth-tab ${isLogin ? 'active' : ''}`}
-            onClick={() => setIsLogin(true)}
-          >
-            LOG IN
-          </div>
-          <div 
-            className={`auth-tab ${!isLogin ? 'active' : ''}`}
-            onClick={() => setIsLogin(false)}
-          >
-            SIGN UP
-          </div>
-        </div>
-        
-        <div className="auth-form-container">
-          <h2>{isLogin ? "Log In" : "Sign Up"}</h2>
-          
-          <form onSubmit={handleSubmit} className="auth-form">
-            {!isLogin && (
+    <div className="auth-container">
+      <div className="auth-tabs">
+        <span 
+          className={isLogin ? "active" : ""} 
+          onClick={() => setIsLogin(true)}
+        >
+          LOG IN
+        </span>
+        <span 
+          className={!isLogin ? "active" : ""} 
+          onClick={() => setIsLogin(false)}
+        >
+          SIGN UP
+        </span>
+      </div>
+      
+      <div className="toggle-switch">
+        <label className="switch">
+          <input type="checkbox" checked={!isLogin} onChange={toggleForm} />
+          <span className="slider round">
+            <span className="toggle-icon"></span>
+          </span>
+        </label>
+      </div>
+
+      <div className="auth-form-container">
+        {isLogin ? (
+          <div className="auth-form">
+            <h2>Log In</h2>
+            <form onSubmit={handleLogin}>
               <div className="form-group">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your Full Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={errors.name ? "input-error" : ""}
+                <span className="input-icon">@</span>
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="Your Email" 
+                  value={loginData.email} 
+                  onChange={handleLoginChange} 
                 />
-                {errors.name && <p className="error-message">{errors.name}</p>}
+                {errors.loginEmail && <div className="error-message">{errors.loginEmail}</div>}
               </div>
-            )}
-            
-            <div className="form-group">
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                value={formData.email}
-                onChange={handleChange}
-                className={errors.email ? "input-error" : ""}
-              />
-              {errors.email && <p className="error-message">{errors.email}</p>}
-            </div>
-            
-            <div className="form-group">
-              <input
-                type="password"
-                name="password"
-                placeholder="Your Password"
-                value={formData.password}
-                onChange={handleChange}
-                className={errors.password ? "input-error" : ""}
-              />
-              {errors.password && <p className="error-message">{errors.password}</p>}
-            </div>
-            
-            <button type="submit" className="submit-button">SUBMIT</button>
-            
-            {isLogin && (
-              <div className="forgot-password">
-                <a href="#">Forgot your password?</a>
+              
+              <div className="form-group">
+                <span className="input-icon">🔒</span>
+                <input 
+                  type="password" 
+                  name="password" 
+                  placeholder="Your Password" 
+                  value={loginData.password} 
+                  onChange={handleLoginChange} 
+                />
+                {errors.loginPassword && <div className="error-message">{errors.loginPassword}</div>}
               </div>
-            )}
-          </form>
-        </div>
+              
+              <button type="submit" className="submit-btn">SUBMIT</button>
+            </form>
+            <div className="forgot-password">
+              <a href="#">Forgot your password?</a>
+            </div>
+          </div>
+        ) : (
+          <div className="auth-form">
+            <h2>Sign Up</h2>
+            <form onSubmit={handleSignup}>
+              <div className="form-group">
+                <span className="input-icon">👤</span>
+                <input 
+                  type="text" 
+                  name="name" 
+                  placeholder="Your Full Name" 
+                  value={signupData.name} 
+                  onChange={handleSignupChange} 
+                />
+                {errors.signupName && <div className="error-message">{errors.signupName}</div>}
+              </div>
+              
+              <div className="form-group">
+                <span className="input-icon">@</span>
+                <input 
+                  type="email" 
+                  name="email" 
+                  placeholder="Your Email" 
+                  value={signupData.email} 
+                  onChange={handleSignupChange} 
+                />
+                {errors.signupEmail && <div className="error-message">{errors.signupEmail}</div>}
+              </div>
+              
+              <div className="form-group">
+                <span className="input-icon">🔒</span>
+                <input 
+                  type="password" 
+                  name="password" 
+                  placeholder="Your Password" 
+                  value={signupData.password} 
+                  onChange={handleSignupChange} 
+                />
+                {errors.signupPassword && <div className="error-message">{errors.signupPassword}</div>}
+              </div>
+              
+              <button type="submit" className="submit-btn">SUBMIT</button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

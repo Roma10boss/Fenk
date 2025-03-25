@@ -4,6 +4,7 @@ import "./Checkout.css";
 
 const Checkout = ({ cartItems, setCartItems, orders, setOrders }) => {
   const navigate = useNavigate();
+  const [step, setStep] = useState(1); // Step 1: Customer Info, Step 2: Review & Confirm
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -15,14 +16,16 @@ const Checkout = ({ cartItems, setCartItems, orders, setOrders }) => {
     confirmationCode: "",
   });
   const [errors, setErrors] = useState({});
-  const [step, setStep] = useState(1); // Step 1: Customer Info, Step 2: Order Review & Confirmation
 
   // Calculate totals
-  const subtotal = cartItems.reduce((total, item) => {
-    const price = parseFloat(item.price.replace('$', ''));
-    return total + price;
-  }, 0);
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => {
+      const price = parseFloat(item.price.replace(/[^0-9.-]+/g, ""));
+      return total + price;
+    }, 0);
+  };
   
+  const subtotal = calculateSubtotal();
   const shipping = 10.00; // Fixed shipping cost
   const total = subtotal + shipping;
 
@@ -65,7 +68,7 @@ const Checkout = ({ cartItems, setCartItems, orders, setOrders }) => {
     return newErrors;
   };
 
-  const handleSubmitStep1 = (e) => {
+  const handleNextStep = (e) => {
     e.preventDefault();
     const stepErrors = validateStep1();
     
@@ -117,212 +120,224 @@ const Checkout = ({ cartItems, setCartItems, orders, setOrders }) => {
     navigate("/order-confirmation");
   };
 
-  const handleBack = () => {
-    setStep(1);
-    setErrors({});
-  };
-
   if (cartItems.length === 0 && step === 1) {
     return (
-      <div className="checkout-container">
+      <div className="checkout-section">
         <h1>Checkout</h1>
-        <div className="empty-cart-message">
+        <div className="empty-checkout">
           <p>Your cart is empty. Please add some items before checking out.</p>
-          <button onClick={() => navigate("/")} className="continue-shopping-btn">Continue Shopping</button>
+          <button onClick={() => navigate("/")} className="return-btn">Continue Shopping</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="checkout-container">
+    <div className="checkout-section">
       <h1>Checkout</h1>
       
-      {/* Checkout Progress */}
-      <div className="checkout-progress">
-        <div className={`progress-step ${step >= 1 ? "active" : ""}`}>
+      {/* Checkout Steps */}
+      <div className="checkout-steps">
+        <div className={`step ${step >= 1 ? "active" : ""}`}>
           <div className="step-number">1</div>
           <div className="step-label">Customer Information</div>
         </div>
-        <div className="progress-line"></div>
-        <div className={`progress-step ${step >= 2 ? "active" : ""}`}>
+        <div className="step-connector"></div>
+        <div className={`step ${step >= 2 ? "active" : ""}`}>
           <div className="step-number">2</div>
           <div className="step-label">Review & Confirm</div>
         </div>
       </div>
       
-      {/* Step 1: Customer Information */}
-      {step === 1 && (
-        <div className="checkout-form-container">
-          <form onSubmit={handleSubmitStep1}>
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Full Name<span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className={errors.name ? "input-error" : ""}
-                />
-                {errors.name && <p className="error-text">{errors.name}</p>}
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="email">Email<span className="required">*</span></label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "input-error" : ""}
-                />
-                {errors.email && <p className="error-text">{errors.email}</p>}
-              </div>
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="address">Address<span className="required">*</span></label>
-              <input
-                type="text"
-                id="address"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className={errors.address ? "input-error" : ""}
-              />
-              {errors.address && <p className="error-text">{errors.address}</p>}
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="city">City<span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className={errors.city ? "input-error" : ""}
-                />
-                {errors.city && <p className="error-text">{errors.city}</p>}
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="postalCode">Postal Code<span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="postalCode"
-                  name="postalCode"
-                  value={formData.postalCode}
-                  onChange={handleChange}
-                  className={errors.postalCode ? "input-error" : ""}
-                />
-                {errors.postalCode && <p className="error-text">{errors.postalCode}</p>}
-              </div>
-            </div>
-            
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="country">Country<span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className={errors.country ? "input-error" : ""}
-                />
-                {errors.country && <p className="error-text">{errors.country}</p>}
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="phone">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            
-            <div className="form-buttons">
-              <button type="button" onClick={() => navigate("/cart")} className="back-btn">Back to Cart</button>
-              <button type="submit" className="continue-btn">Continue</button>
-            </div>
-          </form>
-        </div>
-      )}
-      
-      {/* Step 2: Review & Confirm */}
-      {step === 2 && (
-        <div className="checkout-form-container">
-          {/* Order Summary */}
-          <div className="order-summary">
-            <h2>Order Summary</h2>
-            
-            <div className="cart-items-summary">
-              {cartItems.map((item) => (
-                <div key={item._id} className="summary-item">
-                  <div className="item-image">
-                    <img src={item.image} alt={item.name} />
-                  </div>
-                  <div className="item-details">
-                    <h3>{item.name}</h3>
-                    <p>{item.price}</p>
-                  </div>
+      <div className="checkout-container">
+        {step === 1 ? (
+          <div className="customer-info">
+            <h2>Customer Information</h2>
+            <form onSubmit={handleNextStep}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="name">Full Name <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={errors.name ? "error" : ""}
+                  />
+                  {errors.name && <p className="error-message">{errors.name}</p>}
                 </div>
-              ))}
-            </div>
-            
-            <div className="order-totals">
-              <div className="total-row">
-                <span>Subtotal:</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="total-row">
-                <span>Shipping:</span>
-                <span>${shipping.toFixed(2)}</span>
-              </div>
-              <div className="total-row grand-total">
-                <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Confirmation Code Form */}
-          <div className="confirmation-code-section">
-            <h2>Confirmation Code</h2>
-            <p className="code-info">Please enter your confirmation code to complete your order. This code will be verified by our team before processing.</p>
-            
-            <form onSubmit={handleSubmitOrder}>
-              <div className="form-group">
-                <label htmlFor="confirmationCode">Confirmation Code<span className="required">*</span></label>
-                <input
-                  type="text"
-                  id="confirmationCode"
-                  name="confirmationCode"
-                  value={formData.confirmationCode}
-                  onChange={handleChange}
-                  placeholder="Enter your confirmation code"
-                  className={errors.confirmationCode ? "input-error" : ""}
-                />
-                {errors.confirmationCode && <p className="error-text">{errors.confirmationCode}</p>}
+                
+                <div className="form-group">
+                  <label htmlFor="email">Email <span className="required">*</span></label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={errors.email ? "error" : ""}
+                  />
+                  {errors.email && <p className="error-message">{errors.email}</p>}
+                </div>
               </div>
               
-              <div className="form-buttons">
-                <button type="button" onClick={handleBack} className="back-btn">Back</button>
-                <button type="submit" className="place-order-btn">Place Order</button>
+              <div className="form-group">
+                <label htmlFor="address">Address <span className="required">*</span></label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className={errors.address ? "error" : ""}
+                />
+                {errors.address && <p className="error-message">{errors.address}</p>}
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city">City <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    className={errors.city ? "error" : ""}
+                  />
+                  {errors.city && <p className="error-message">{errors.city}</p>}
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="postalCode">Postal Code <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    name="postalCode"
+                    value={formData.postalCode}
+                    onChange={handleChange}
+                    className={errors.postalCode ? "error" : ""}
+                  />
+                  {errors.postalCode && <p className="error-message">{errors.postalCode}</p>}
+                </div>
+              </div>
+              
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="country">Country <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    className={errors.country ? "error" : ""}
+                  />
+                  {errors.country && <p className="error-message">{errors.country}</p>}
+                </div>
+                
+                <div className="form-group">
+                  <label htmlFor="phone">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              
+              <div className="form-actions">
+                <button type="button" onClick={() => navigate("/cart")} className="back-btn">
+                  Back to Cart
+                </button>
+                <button type="submit" className="next-btn">
+                  Continue
+                </button>
               </div>
             </form>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="review-confirm">
+            <div className="order-review">
+              <h2>Order Review</h2>
+              <div className="order-items">
+                {cartItems.map((item, index) => (
+                  <div key={index} className="order-item">
+                    <div className="item-image">
+                      <img src={item.image} alt={item.name} />
+                    </div>
+                    <div className="item-details">
+                      <h3>{item.name}</h3>
+                      <p>{item.price}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="order-summary">
+                <div className="summary-item">
+                  <span>Subtotal:</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <div className="summary-item">
+                  <span>Shipping:</span>
+                  <span>${shipping.toFixed(2)}</span>
+                </div>
+                <div className="summary-item total">
+                  <span>Total:</span>
+                  <span>${total.toFixed(2)}</span>
+                </div>
+              </div>
+              
+              <div className="confirmation-section">
+                <h2>Confirmation Code</h2>
+                <p>Please enter your confirmation code to complete your order:</p>
+                <form onSubmit={handleSubmitOrder}>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      name="confirmationCode"
+                      value={formData.confirmationCode}
+                      onChange={handleChange}
+                      placeholder="Enter confirmation code"
+                      className={errors.confirmationCode ? "error" : ""}
+                    />
+                    {errors.confirmationCode && <p className="error-message">{errors.confirmationCode}</p>}
+                  </div>
+                  
+                  <div className="form-actions">
+                    <button type="button" onClick={() => setStep(1)} className="back-btn">
+                      Back
+                    </button>
+                    <button type="submit" className="submit-btn">
+                      Place Order
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            
+            <div className="customer-summary">
+              <h2>Customer Information</h2>
+              <div className="info-group">
+                <h3>Contact</h3>
+                <p>{formData.name}</p>
+                <p>{formData.email}</p>
+                <p>{formData.phone || "No phone provided"}</p>
+              </div>
+              <div className="info-group">
+                <h3>Shipping Address</h3>
+                <p>{formData.address}</p>
+                <p>{formData.city}, {formData.postalCode}</p>
+                <p>{formData.country}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

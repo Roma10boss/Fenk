@@ -31,52 +31,15 @@ const Navbar = ({ cartItems }) => {
 
   return (
     <header className="navbar">
-      <div className="navbar-container">
+      <div className="navbar-content">
         <Link to="/" className="navbar-logo">
           FENKPARET
         </Link>
 
-        <div className="menu-icon" onClick={toggleNav}>
-          <span className="menu-bar"></span>
-          <span className="menu-bar"></span>
-          <span className="menu-bar"></span>
-        </div>
-
-        <nav className={isNavOpen ? "nav-menu active" : "nav-menu"}>
-          <ul className="nav-list">
-            <li className="nav-item">
-              <Link to="/" className="nav-link" onClick={() => setIsNavOpen(false)}>
-                Home
-              </Link>
-            </li>
-
-            <li className="nav-item">
-              <Link to="/contact" className="nav-link" onClick={() => setIsNavOpen(false)}>
-                Contact Us
-              </Link>
-            </li>
-
-            {isLoggedIn ? (
-              <>
-                <li className="nav-item">
-                  <Link to="/account" className="nav-link" onClick={() => setIsNavOpen(false)}>
-                    My Account
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <button className="logout-btn" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </li>
-              </>
-            ) : (
-              <li className="nav-item">
-                <Link to="/auth" className="nav-link" onClick={() => setIsNavOpen(false)}>
-                  Sign In / Sign Up
-                </Link>
-              </li>
-            )}
-          </ul>
+        <nav className="nav-menu">
+          <Link to="/" className="nav-link">Home</Link>
+          <Link to="/contact" className="nav-link">Contact Us</Link>
+          <Link to="/auth" className="nav-link">Sign In / Sign Up</Link>
         </nav>
 
         <div className="navbar-actions">
@@ -92,6 +55,19 @@ const Navbar = ({ cartItems }) => {
               )}
             </div>
           </Link>
+        </div>
+
+        <div className="menu-icon" onClick={toggleNav}>
+          <span className="menu-bar"></span>
+          <span className="menu-bar"></span>
+          <span className="menu-bar"></span>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`mobile-menu ${isNavOpen ? 'active' : ''}`}>
+          <Link to="/" className="mobile-nav-link" onClick={() => setIsNavOpen(false)}>Home</Link>
+          <Link to="/contact" className="mobile-nav-link" onClick={() => setIsNavOpen(false)}>Contact Us</Link>
+          <Link to="/auth" className="mobile-nav-link" onClick={() => setIsNavOpen(false)}>Sign In / Sign Up</Link>
         </div>
       </div>
     </header>

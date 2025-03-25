@@ -47,78 +47,80 @@ const Home = ({ cartItems, setCartItems }) => {
   };
 
   return (
-    <div className="home-section">
-      <h1>Shop the Latest Trends</h1>
-      
-      <div className="shop-content">
-        {/* Category Filter */}
-        <div className="filter-section">
-          <h2>Categories</h2>
-          <div className="filter-options">
-            {["All", "Shoes", "Backpack", "Jacket", "Hoodie", "T-Shirt", "Jeans", "Dress", "Accessories"].map(category => (
-              <label key={category} className="filter-option">
-                <input
-                  type="radio"
-                  name="category"
-                  value={category}
-                  checked={selectedCategory === category}
-                  onChange={() => setSelectedCategory(category)}
-                />
-                <span>{category}</span>
-              </label>
-            ))}
-          </div>
-        </div>
+    <div className="home-wrapper">
+      <div className="content-wrapper">
+        <h1>Shop the Latest Trends</h1>
         
-        {/* Products Section */}
-        <div className="products-section">
-          <div className="products-grid">
-            {currentProducts.map((product) => (
-              <div key={product._id} className="product-card">
-                <div className="product-image-wrapper">
-                  <img src={product.image} alt={product.name} className="product-image" />
-                </div>
-                <div className="product-details">
-                  <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">{product.price}</p>
-                  <button className="add-cart-btn" onClick={() => handleAddToCart(product)}>
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
+        <div className="home-content">
+          {/* Categories Sidebar */}
+          <div className="categories-sidebar">
+            <h2>Categories</h2>
+            <div className="category-list">
+              {["All", "Shoes", "Backpack", "Jacket", "Hoodie", "T-Shirt", "Jeans", "Dress", "Accessories"].map(category => (
+                <label key={category} className="category-item">
+                  <input
+                    type="radio"
+                    name="category"
+                    value={category}
+                    checked={selectedCategory === category}
+                    onChange={() => setSelectedCategory(category)}
+                  />
+                  <span>{category}</span>
+                </label>
+              ))}
+            </div>
           </div>
           
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination">
-              <button
-                className="page-btn"
-                disabled={currentPage === 1}
-                onClick={() => paginate(currentPage - 1)}
-              >
-                Previous
-              </button>
-              <div className="page-numbers">
-                {[...Array(totalPages).keys()].map(number => (
-                  <button
-                    key={number + 1}
-                    className={`page-number ${currentPage === number + 1 ? 'active' : ''}`}
-                    onClick={() => paginate(number + 1)}
-                  >
-                    {number + 1}
-                  </button>
-                ))}
-              </div>
-              <button
-                className="page-btn"
-                disabled={currentPage === totalPages}
-                onClick={() => paginate(currentPage + 1)}
-              >
-                Next
-              </button>
+          {/* Products Grid */}
+          <div className="products-area">
+            <div className="products-grid">
+              {currentProducts.map((product) => (
+                <div key={product._id} className="product-card">
+                  <div className="product-image-wrapper">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                  </div>
+                  <div className="product-details">
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-price">{product.price}</p>
+                    <button className="add-cart-btn" onClick={() => handleAddToCart(product)}>
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="pagination">
+                <button
+                  className="page-btn"
+                  disabled={currentPage === 1}
+                  onClick={() => paginate(currentPage - 1)}
+                >
+                  Previous
+                </button>
+                <div className="page-numbers">
+                  {[...Array(totalPages).keys()].map(number => (
+                    <button
+                      key={number + 1}
+                      className={`page-number ${currentPage === number + 1 ? 'active' : ''}`}
+                      onClick={() => paginate(number + 1)}
+                    >
+                      {number + 1}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  className="page-btn"
+                  disabled={currentPage === totalPages}
+                  onClick={() => paginate(currentPage + 1)}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
